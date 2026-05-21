@@ -97,23 +97,81 @@
 </div>
 
 <!-- MAIN APP -->
+<!-- MAIN APP -->
 <div id="app" style="display:none">
 
-  <div class="app-header">
+  <div class="topbar">
     <h1>SnapLink</h1>
-    <button onclick="logout()">Logout</button>
+
+    <input
+      type="text"
+      placeholder="Search users..."
+      class="search-box"
+    />
+
+    <div class="profile-icon">👤</div>
   </div>
 
-  <div class="create-post">
-    <input type="text" id="post-caption" placeholder="Write a caption..." />
-    <input type="text" id="post-img-url" placeholder="Image URL optional" />
-    <button onclick="createPost()">Post</button>
-  </div>
+  <div class="main-layout">
 
-  <div id="feed-posts"></div>
+    <div class="sidebar">
+
+      <button>🏠 Home</button>
+
+      <button>🔍 Search</button>
+
+      <button>➕ Post</button>
+
+      <button>💬 Messages</button>
+
+      <button>👤 Profile</button>
+
+      <button onclick="logout()">🚪 Logout</button>
+
+    </div>
+
+    <div class="feed">
+
+      <div class="create-post">
+
+        <input
+          type="text"
+          id="post-caption"
+          placeholder="Write a caption..."
+        />
+
+        <input
+          type="text"
+          id="post-img-url"
+          placeholder="Image URL optional"
+        />
+
+        <button onclick="createPost()">Post</button>
+
+      </div>
+
+      <div id="feed-posts">
+
+        <div class="post-card">
+          <h3>@dinesh</h3>
+
+          <p>Welcome to SnapLink 🚀</p>
+
+          <div class="post-actions">
+            <button>❤️ Like</button>
+            <button>💬 Comment</button>
+            <button>📤 Share</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </div>
-
 <script src="app.js"></script>
 
 </body>
