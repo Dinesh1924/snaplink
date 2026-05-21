@@ -4,7 +4,7 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
