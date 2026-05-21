@@ -23,25 +23,50 @@ function switchTab(tab) {
 
 async function signup() {
 
+  const username =
+    document.getElementById('signup-username');
+
   const email =
-    document.getElementById('signup-email').value;
+    document.getElementById('signup-email');
 
   const password =
-    document.getElementById('signup-pass').value;
+    document.getElementById('signup-pass');
+
+  const bio =
+    document.getElementById('signup-bio');
+
+  document.getElementById('auth-error').innerText = "";
+
+  username.style.border = "";
+  email.style.border = "";
+  password.style.border = "";
 
   try {
 
     await auth.createUserWithEmailAndPassword(
-      email,
-      password
+      email.value,
+      password.value
     );
 
-    alert("Signup Successful 🎉");
+    switchTab('login');
+
+    document.getElementById('login-email').value =
+      email.value;
+
+    document.getElementById('login-pass').focus();
 
   } catch (error) {
 
     document.getElementById('auth-error').innerText =
       error.message;
+
+    if(error.message.includes("email")) {
+      email.style.border = "2px solid red";
+    }
+
+    if(error.message.includes("password")) {
+      password.style.border = "2px solid red";
+    }
 
   }
 
@@ -67,6 +92,7 @@ async function login() {
 
     document.getElementById('app').style.display =
       'block';
+      showHome();
 
   } catch (error) {
 
@@ -84,3 +110,35 @@ async function logout() {
   location.reload();
 
 }
+async function showHome() {
+  const feed = document.getElementById("feed-posts");
+
+  const posts = await fetch("/api/posts")
+    .then(res => res.json());
+
+  feed.innerHTML = "";
+
+  posts.forEach(post => {
+    const div = document.createElement("div");
+    div.className = "post-card";
+
+    div.innerHTML = `
+      <h3>@${post.username}</h3>
+      <p>${post.caption}</p>
+
+      ${
+        post.imageUrl
+          ? `<img src="${post.imageUrl}" style="width:100%; border-radius:10px; margin-top:10px;">`
+          : ""
+      }
+
+      <div class="post-actions">
+        <button>❤️ ${post.likes ? post.likes.length : 0}</button>
+        <button>💬 Comment</button>
+        <button>📤 Share</button>
+      </div>
+    `;
+
+    feed.appendChild(div);
+  });
+}s
