@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SnapLink</title>
+
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+
+  <div class="auth-box">
+
+    <h1 class="logo-text">SnapLink</h1>
+
+    <p class="tagline">
+      Connect. Share. Communicate.
+    </p>
+
+    <div class="tab-row">
+      <button class="tab active" onclick="switchTab('login')">
+        Login
+      </button>
+
+      <button class="tab" onclick="switchTab('signup')">
+        Sign Up
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+
+      <input
+        type="email"
+        id="login-email"
+        placeholder="Email"
+      />
+
+      <input
+        type="password"
+        id="login-pass"
+        placeholder="Password"
+      />
+
+      <button class="btn-primary" onclick="login()">
+        Login
+      </button>
+
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" style="display:none">
+
+      <input
+        type="text"
+        id="signup-username"
+        placeholder="Choose a username"
+      />
+
+      <input
+        type="email"
+        id="signup-email"
+        placeholder="Email"
+      />
+
+      <input
+        type="password"
+        id="signup-pass"
+        placeholder="Password"
+      />
+
+      <input
+        type="text"
+        id="signup-bio"
+        placeholder="Bio"
+      />
+
+      <button class="btn-primary" onclick="signup()">
+        Create Account
+      </button>
+
+    </div>
+
+    <div id="auth-error"></div>
+
+  </div>
+
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+
+  <div class="app-header">
+    <h1>SnapLink</h1>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="create-post">
+    <input type="text" id="post-caption" placeholder="Write a caption..." />
+    <input type="text" id="post-img-url" placeholder="Image URL optional" />
+    <button onclick="createPost()">Post</button>
+  </div>
+
+  <div id="feed-posts"></div>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
