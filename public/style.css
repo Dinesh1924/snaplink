@@ -212,3 +212,65 @@ h1{
   border-radius:8px;
   cursor:pointer;
 }
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#111;
+  display:flex;
+  justify-content:space-around;
+  padding:15px;
+  border-top:1px solid #222;
+}
+
+.bottom-nav button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.profile-header{
+  display:flex;
+  align-items:center;
+  gap:30px;
+  margin-top:20px;
+}
+
+.profile-pic{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+}
+
+.profile-stats{
+  display:flex;
+  gap:30px;
+}
+
+.story-row{
+  display:flex;
+  gap:15px;
+  margin:20px 0;
+}
+
+.story{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  border:3px solid #8b5cf6;
+}
+
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.grid-post{
+  background:#222;
+  height:120px;
+  border-radius:10px;
+}

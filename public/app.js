@@ -141,4 +141,45 @@ async function showHome() {
 
     feed.appendChild(div);
   });
-}s
+}
+async function showProfile() {
+  hideAllPages();
+
+  document.getElementById("profile-page").style.display = "block";
+
+  const user = auth.currentUser;
+
+  if (!user) return;
+
+  const res = await fetch(`/api/users/${user.email.split("@")[0]}`);
+  const data = await res.json();
+
+  document.getElementById("followers-count").innerText =
+    data.followers ? data.followers.length : 0;
+
+  document.getElementById("following-count").innerText =
+    data.following ? data.following.length : 0;
+}
+function hideAllPages() {
+  document.getElementById("feed-posts").style.display = "none";
+  document.getElementById("profile-page").style.display = "none";
+  document.querySelector(".create-post").style.display = "none";
+}
+
+function showHome() {
+  hideAllPages();
+  document.getElementById("feed-posts").style.display = "block";
+}
+
+function showCreate() {
+  hideAllPages();
+  document.querySelector(".create-post").style.display = "block";
+}
+
+function showSearch() {
+  alert("Search page coming soon");
+}
+
+function showMessages() {
+  alert("Messages page coming soon");
+}
