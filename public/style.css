@@ -380,3 +380,95 @@ body{
 .profile-logout-btn:hover{
   background:#e11d48;
 }
+/* Responsive Design */
+
+@media (max-width: 768px) {
+
+  body{
+    padding-bottom:80px;
+  }
+
+  #app{
+    padding:0;
+  }
+
+  .topbar{
+    padding:12px;
+    gap:10px;
+  }
+
+  .topbar h1{
+    font-size:26px;
+  }
+
+  .search-box{
+    width:55%;
+    padding:10px;
+  }
+
+  .top-profile-pic{
+    width:36px;
+    height:36px;
+  }
+
+  .main-layout{
+    display:block;
+  }
+
+  .feed{
+    padding:12px;
+  }
+
+  .create-post{
+    padding:15px;
+  }
+
+  .profile-header{
+    gap:15px;
+    align-items:center;
+  }
+
+  .profile-pic{
+    width:90px;
+    height:90px;
+  }
+
+  .profile-stats{
+    gap:18px;
+    font-size:14px;
+  }
+
+  .story{
+    width:60px;
+    height:60px;
+  }
+
+  .profile-grid{
+    grid-template-columns:repeat(3, 1fr);
+    gap:5px;
+  }
+
+  .grid-post{
+    height:100px;
+  }
+
+  .bottom-nav{
+    padding:12px 0;
+  }
+
+  .bottom-nav button{
+    font-size:24px;
+  }
+}
+
+@media (min-width: 769px) {
+
+  .feed{
+    max-width:1200px;
+    margin:auto;
+  }
+
+  .profile-grid{
+    grid-template-columns:repeat(3, 1fr);
+  }
+}
