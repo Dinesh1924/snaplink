@@ -143,7 +143,14 @@ async function loadUserProfile() {
 
     document.getElementById("main-profile-photo").style.backgroundImage =
       `url(${userData.profilePhoto})`;
-  }
+  }else {
+
+  document.getElementById("top-profile-photo").style.backgroundImage =
+    "";
+
+  document.getElementById("main-profile-photo").style.backgroundImage =
+    "";
+}
 }
 
 function hideAllPages() {
@@ -247,21 +254,28 @@ async function uploadProfilePhoto() {
   reader.onload = async function(e) {
 
     const imageData = e.target.result;
+   try {
 
-    await db.collection("users")
-      .doc(auth.currentUser.uid)
-      .update({
-        profilePhoto: imageData
-      });
+  await db.collection("users")
+    .doc(auth.currentUser.uid)
+    .set({
+      profilePhoto: imageData
+    });
 
-    document.getElementById("top-profile-photo").style.backgroundImage =
-      `url(${imageData})`;
+  document.getElementById("top-profile-photo").style.backgroundImage =
+    `url(${imageData})`;
 
-    document.getElementById("main-profile-photo").style.backgroundImage =
-      `url(${imageData})`;
-  };
+  document.getElementById("main-profile-photo").style.backgroundImage =
+    `url(${imageData})`;
 
-  reader.readAsDataURL(file);
+} catch(error) {
+
+  console.log(error);
+}
+
+};
+
+reader.readAsDataURL(file);
 }
 function openPhotoOptions() {
 
@@ -336,6 +350,7 @@ function openEditProfile() {
   document.getElementById("edit-profile-box").style.display =
     "block";
 
+
   document.getElementById("edit-username").value =
     document.getElementById("profile-username").innerText;
 
@@ -355,14 +370,15 @@ async function saveProfileDetails() {
 
   const bio =
     document.getElementById("edit-bio").value;
+    try {
 
   await db.collection("users")
     .doc(auth.currentUser.uid)
-    .update({
+    .set({
       username: username,
       phone: phone,
       bio: bio
-    });
+    }, { merge: true });
 
   document.getElementById("profile-username").innerText =
     username;
@@ -372,4 +388,12 @@ async function saveProfileDetails() {
 
   document.getElementById("edit-profile-box").style.display =
     "none";
+     alert("Profile updated successfully");
+
+  } catch(error) {
+
+    console.log(error);
+
+    alert("Failed to update profile");
+  }
 }
