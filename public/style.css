@@ -288,4 +288,95 @@ body{
   object-fit:cover;
   cursor:pointer;
 }
-s
+.photo-options{
+  display:none;
+  position:absolute;
+  background:#1c1c1c;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+.photo-options button{
+  display:block;
+  width:100%;
+  margin-bottom:10px;
+  padding:10px;
+  background:#222;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.photo-options button:hover{
+  background:#333;
+}
+.logout-btn{
+  margin-top:15px;
+  padding:10px 20px;
+  background:#ff3b5c;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.logout-btn:hover{
+  background:#e11d48;
+}
+.empty-photo{
+  background:#333;
+  border:2px solid #555;
+}
+
+.top-profile-pic{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+  cursor:pointer;
+  background-size:cover;
+  background-position:center;
+}
+
+.profile-pic{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  background-size:cover;
+  background-position:center;
+  cursor:pointer;
+}
+.top-logout-btn{
+  margin-left:15px;
+  padding:8px 18px;
+  background:#ff3b5c;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.top-logout-btn:hover{
+  background:#e11d48;
+}
+.profile-logout-btn{
+  position:absolute;
+  top:180px;
+  right:40px;
+
+  padding:6px 14px;
+  background:#ff3b5c;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.profile-logout-btn:hover{
+  background:#e11d48;
+}

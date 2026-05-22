@@ -48,16 +48,25 @@ async function signup() {
       password.value
     );
 
+    localStorage.setItem(
+  email.value + "_username",
+  username.value
+);
+
+localStorage.setItem(
+  email.value + "_bio",
+  bio.value
+);
+    switchTab('login');
+    document.getElementById('login-email').value =
+  email.value;
+
     switchTab('login');
 
     document.getElementById('login-email').value =
       email.value;
 
     document.getElementById('login-pass').focus();
-    localStorage.setItem(
-  "snaplinkUsername",
-  username.value
-);
 
   } catch (error) {
 
@@ -97,14 +106,25 @@ async function login() {
     document.getElementById('app').style.display =
       'block';
       showHome();
-     let savedUsername = localStorage.getItem("snaplinkUsername");
+      loadProfilePhoto();
+    let savedUsername =
+  localStorage.getItem(email + "_username");
+
+let savedBio =
+  localStorage.getItem(email + "_bio");
 
 if (!savedUsername) {
-  savedUsername = document.getElementById("login-email").value.split("@")[0];
+  savedUsername =
+    document.getElementById("login-email")
+      .value
+      .split("@")[0];
 }
 
 document.getElementById("profile-username").innerText =
   savedUsername;
+
+document.getElementById("profile-bio").innerText =
+  savedBio;
   } catch (error) {
 
     document.getElementById('auth-error').innerText =
@@ -204,20 +224,164 @@ function uploadProfilePhoto() {
   reader.onload = function(e) {
     const imageData = e.target.result;
 
-    localStorage.setItem("profilePhoto", imageData);
+   localStorage.setItem(
+  auth.currentUser.email + "_profilePhoto",
+  imageData
+);
 
-    document.getElementById("top-profile-photo").src = imageData;
-    document.getElementById("main-profile-photo").src = imageData;
+   document.getElementById("top-profile-photo").style.backgroundImage =
+  `url(${imageData})`;
+
+document.getElementById("main-profile-photo").style.backgroundImage =
+  `url(${imageData})`;
   };
 
   reader.readAsDataURL(file);
 }
 
 window.onload = function() {
-  const savedPhoto = localStorage.getItem("profilePhoto");
+const userEmail = auth.currentUser?.email;
+
+const savedPhoto = userEmail
+  ? localStorage.getItem(userEmail + "_profilePhoto")
+  : null;
+
+if (savedPhoto) {
+
+  document.getElementById("top-profile-photo").style.backgroundImage =
+    `url(${savedPhoto})`;
+
+  document.getElementById("main-profile-photo").style.backgroundImage =
+    `url(${savedPhoto})`;
+}
+};
+function openPhotoOptions() {
+
+  const menu =
+    document.getElementById("photo-options");
+
+  if (menu.style.display === "block") {
+    menu.style.display = "none";
+  } else {
+    menu.style.display = "block";
+  }
+}
+
+function viewProfilePhoto() {
+
+  const img =
+    document.getElementById("main-profile-photo").src;
+
+  const viewer = document.createElement("div");
+
+  viewer.innerHTML = `
+    <div
+      style="
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.9);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+      "
+      onclick="this.remove()"
+    >
+
+      <img
+        src="${img}"
+        style="
+          width:350px;
+          height:350px;
+          border-radius:20px;
+          object-fit:cover;
+        "
+      />
+
+    </div>
+  `;
+
+  document.body.appendChild(viewer);
+}
+
+function changeProfilePhoto() {
+
+  document.getElementById(
+    "profile-photo-input"
+  ).click();
+}
+document.addEventListener("click", function(event) {
+
+  const menu =
+    document.getElementById("photo-options");
+
+  const profilePhoto =
+    document.getElementById("main-profile-photo");
+
+  if (
+    !menu.contains(event.target) &&
+    event.target !== profilePhoto
+  ) {
+    menu.style.display = "none";
+  }
+});
+function loadProfilePhoto() {
+
+  const userEmail = auth.currentUser?.email;
+
+  const savedPhoto = userEmail
+    ? localStorage.getItem(userEmail + "_profilePhoto")
+    : null;
 
   if (savedPhoto) {
-    document.getElementById("top-profile-photo").src = savedPhoto;
-    document.getElementById("main-profile-photo").src = savedPhoto;
+
+    document.getElementById("top-profile-photo").style.backgroundImage =
+      `url(${savedPhoto})`;
+
+    document.getElementById("main-profile-photo").style.backgroundImage =
+      `url(${savedPhoto})`;
+
+  } else {
+
+    document.getElementById("top-profile-photo").style.backgroundImage = "";
+
+    document.getElementById("main-profile-photo").style.backgroundImage = "";
   }
-};
+}
+function openEditProfile() {
+  document.getElementById("edit-profile-box").style.display = "block";
+
+  document.getElementById("edit-username").value =
+    document.getElementById("profile-username").innerText;
+
+  document.getElementById("edit-email").value =
+    auth.currentUser.email;
+
+  document.getElementById("edit-bio").value =
+    document.getElementById("profile-bio").innerText;
+}
+
+function saveProfileDetails() {
+  const email = auth.currentUser.email;
+
+  const username =
+    document.getElementById("edit-username").value;
+
+  const phone =
+    document.getElementById("edit-phone").value;
+
+  const bio =
+    document.getElementById("edit-bio").value;
+
+  localStorage.setItem(email + "_username", username);
+  localStorage.setItem(email + "_phone", phone);
+  localStorage.setItem(email + "_bio", bio);
+
+  document.getElementById("profile-username").innerText = username;
+  document.getElementById("profile-bio").innerText = bio;
+
+  document.getElementById("edit-profile-box").style.display = "none";
+}

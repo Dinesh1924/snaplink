@@ -111,7 +111,7 @@
       class="search-box"
     />
 
- <img id="top-profile-photo" src="https://i.pravatar.cc/150" class="top-profile-pic" onclick="showProfile()"/>
+ <div id="top-profile-photo" class="top-profile-pic empty-photo" onclick="showProfile()"></div>
   </div>
 
   <div class="main-layout">
@@ -180,12 +180,22 @@
 
   <div class="profile-header">
 
-   <img
-      id="main-profile-photo"
-      src="https://i.pravatar.cc/150"
-      class="profile-pic"
-      onclick="document.getElementById('profile-photo-input').click()"
-/>
+   <div
+  id="main-profile-photo"
+  class="profile-pic empty-photo"
+  onclick="openPhotoOptions()"
+></div>
+<div id="photo-options" class="photo-options">
+
+  <button onclick="viewProfilePhoto()">
+    View Photo
+  </button>
+
+  <button onclick="changeProfilePhoto()">
+    Change Photo
+  </button>
+
+</div>
 
 <input
       type="file"
@@ -217,8 +227,26 @@
   </div>
 
 <h2 id="profile-username">@username</h2>
+<p id="profile-bio">Bio</p>
 
-  <p>SnapLink Developer 🚀</p>
+<button class="edit-profile-btn" onclick="openEditProfile()">
+  Edit Profile
+</button>
+</div>   <!-- profile-page closing div -->
+
+<div id="edit-profile-box" class="edit-profile-box" style="display:none;">
+
+  <input type="text" id="edit-username" placeholder="Edit username">
+
+  <input type="email" id="edit-email" placeholder="Edit email">
+
+  <input type="text" id="edit-phone" placeholder="Add phone number">
+
+  <input type="text" id="edit-bio" placeholder="Edit bio">
+
+  <button onclick="saveProfileDetails()">Save</button>
+
+</div>
 
   <div class="story-row">
 
