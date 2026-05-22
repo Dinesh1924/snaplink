@@ -10,88 +10,71 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 function switchTab(tab) {
 
-  document.getElementById('login-form').style.display =
-    tab === 'login' ? 'block' : 'none';
+  document.getElementById("login-form").style.display =
+    tab === "login" ? "block" : "none";
 
-  document.getElementById('signup-form').style.display =
-    tab === 'signup' ? 'block' : 'none';
-
+  document.getElementById("signup-form").style.display =
+    tab === "signup" ? "block" : "none";
 }
 
 async function signup() {
 
   const username =
-    document.getElementById('signup-username');
+    document.getElementById("signup-username");
 
   const email =
-    document.getElementById('signup-email');
+    document.getElementById("signup-email");
 
   const password =
-    document.getElementById('signup-pass');
+    document.getElementById("signup-pass");
 
   const bio =
-    document.getElementById('signup-bio');
+    document.getElementById("signup-bio");
 
-  document.getElementById('auth-error').innerText = "";
-
-  username.style.border = "";
-  email.style.border = "";
-  password.style.border = "";
+  document.getElementById("auth-error").innerText = "";
 
   try {
 
-    await auth.createUserWithEmailAndPassword(
-      email.value,
-      password.value
-    );
+    const userCredential =
+      await auth.createUserWithEmailAndPassword(
+        email.value,
+        password.value
+      );
+          await db.collection("users")
+      .doc(userCredential.user.uid)
+      .set({
+        username: username.value,
+        email: email.value,
+        bio: bio.value,
+        phone: "",
+        profilePhoto: "",
+        followers: [],
+        following: []
+      });
 
-    localStorage.setItem(
-  email.value + "_username",
-  username.value
-);
+    switchTab("login");
 
-localStorage.setItem(
-  email.value + "_bio",
-  bio.value
-);
-    switchTab('login');
-    document.getElementById('login-email').value =
-  email.value;
-
-    switchTab('login');
-
-    document.getElementById('login-email').value =
+    document.getElementById("login-email").value =
       email.value;
-
-    document.getElementById('login-pass').focus();
 
   } catch (error) {
 
-    document.getElementById('auth-error').innerText =
+    document.getElementById("auth-error").innerText =
       error.message;
-
-    if(error.message.includes("email")) {
-      email.style.border = "2px solid red";
-    }
-
-    if(error.message.includes("password")) {
-      password.style.border = "2px solid red";
-    }
-
   }
-
 }
 
 async function login() {
 
   const email =
-    document.getElementById('login-email').value;
+    document.getElementById("login-email").value;
 
   const password =
-    document.getElementById('login-pass').value;
+    document.getElementById("login-pass").value;
 
   try {
 
@@ -100,38 +83,20 @@ async function login() {
       password
     );
 
-    document.getElementById('auth-screen').style.display =
-      'none';
+    document.getElementById("auth-screen").style.display =
+      "none";
 
-    document.getElementById('app').style.display =
-      'block';
-      showHome();
-      loadProfilePhoto();
-    let savedUsername =
-  localStorage.getItem(email + "_username");
+    document.getElementById("app").style.display =
+      "block";
 
-let savedBio =
-  localStorage.getItem(email + "_bio");
+    await loadUserProfile();
 
-if (!savedUsername) {
-  savedUsername =
-    document.getElementById("login-email")
-      .value
-      .split("@")[0];
-}
+    showHome();
+      } catch (error) {
 
-document.getElementById("profile-username").innerText =
-  savedUsername;
-
-document.getElementById("profile-bio").innerText =
-  savedBio;
-  } catch (error) {
-
-    document.getElementById('auth-error').innerText =
+    document.getElementById("auth-error").innerText =
       error.message;
-
   }
-
 }
 
 async function logout() {
@@ -139,72 +104,127 @@ async function logout() {
   await auth.signOut();
 
   location.reload();
-
 }
-async function showHome() {
-  const feed = document.getElementById("feed-posts");
 
-  const posts = await fetch("/api/posts")
-    .then(res => res.json());
-
-  feed.innerHTML = "";
-
-  posts.forEach(post => {
-    const div = document.createElement("div");
-    div.className = "post-card";
-
-    div.innerHTML = `
-      <h3>@${post.username}</h3>
-      <p>${post.caption}</p>
-
-      ${
-        post.imageUrl
-          ? `<img src="${post.imageUrl}" style="width:100%; border-radius:10px; margin-top:10px;">`
-          : ""
-      }
-
-      <div class="post-actions">
-        <button>❤️ ${post.likes ? post.likes.length : 0}</button>
-        <button>💬 Comment</button>
-        <button>📤 Share</button>
-      </div>
-    `;
-
-    feed.appendChild(div);
-  });
-}
-async function showProfile() {
-  hideAllPages();
-
-  document.getElementById("profile-page").style.display = "block";
+async function loadUserProfile() {
 
   const user = auth.currentUser;
 
   if (!user) return;
 
-  const res = await fetch(`/api/users/${user.email.split("@")[0]}`);
-  const data = await res.json();
+  const userDoc =
+    await db.collection("users")
+      .doc(user.uid)
+      .get();
+
+  if (!userDoc.exists) return;
+
+  const userData = userDoc.data();
+
+  document.getElementById("profile-username").innerText =
+    userData.username || "username";
+
+  document.getElementById("profile-bio").innerText =
+    userData.bio || "No bio added";
 
   document.getElementById("followers-count").innerText =
-    data.followers ? data.followers.length : 0;
+    userData.followers
+      ? userData.followers.length
+      : 0;
 
   document.getElementById("following-count").innerText =
-    data.following ? data.following.length : 0;
-}
-function hideAllPages() {
-  document.getElementById("feed-posts").style.display = "none";
-  document.getElementById("profile-page").style.display = "none";
-  document.querySelector(".create-post").style.display = "none";
+    userData.following
+      ? userData.following.length
+      : 0;
+        if (userData.profilePhoto) {
+
+    document.getElementById("top-profile-photo").style.backgroundImage =
+      `url(${userData.profilePhoto})`;
+
+    document.getElementById("main-profile-photo").style.backgroundImage =
+      `url(${userData.profilePhoto})`;
+  }
 }
 
-function showHome() {
+function hideAllPages() {
+
+  document.getElementById("feed-posts").style.display =
+    "none";
+
+  document.getElementById("profile-page").style.display =
+    "none";
+
+  document.querySelector(".create-post").style.display =
+    "none";
+}
+
+async function showHome() {
+
   hideAllPages();
-  document.getElementById("feed-posts").style.display = "block";
+
+  document.getElementById("feed-posts").style.display =
+    "block";
+
+  const feed =
+    document.getElementById("feed-posts");
+
+  try {
+
+    const posts =
+      await fetch("/api/posts")
+        .then(res => res.json());
+
+    feed.innerHTML = "";
+        posts.forEach(post => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "post-card";
+
+      div.innerHTML = `
+        <h3>@${post.username || "user"}</h3>
+
+        <p>${post.caption || ""}</p>
+
+        ${
+          post.imageUrl
+            ? `<img src="${post.imageUrl}" style="width:100%; border-radius:10px; margin-top:10px;">`
+            : ""
+        }
+
+        <div class="post-actions">
+          <button>❤️</button>
+          <button>💬</button>
+          <button>📤</button>
+        </div>
+      `;
+
+      feed.appendChild(div);
+    });
+
+  } catch (error) {
+
+    feed.innerHTML =
+      "<p>No posts available</p>";
+  }
 }
 
 function showCreate() {
+
   hideAllPages();
-  document.querySelector(".create-post").style.display = "block";
+
+  document.querySelector(".create-post").style.display =
+    "block";
+}
+async function showProfile() {
+
+  hideAllPages();
+
+  document.getElementById("profile-page").style.display =
+    "block";
+
+  await loadUserProfile();
 }
 
 function showSearch() {
@@ -214,65 +234,64 @@ function showSearch() {
 function showMessages() {
   alert("Messages page coming soon");
 }
-function uploadProfilePhoto() {
-  const file = document.getElementById("profile-photo-input").files[0];
+
+async function uploadProfilePhoto() {
+
+  const file =
+    document.getElementById("profile-photo-input").files[0];
 
   if (!file) return;
 
   const reader = new FileReader();
 
-  reader.onload = function(e) {
+  reader.onload = async function(e) {
+
     const imageData = e.target.result;
 
-   localStorage.setItem(
-  auth.currentUser.email + "_profilePhoto",
-  imageData
-);
+    await db.collection("users")
+      .doc(auth.currentUser.uid)
+      .update({
+        profilePhoto: imageData
+      });
 
-   document.getElementById("top-profile-photo").style.backgroundImage =
-  `url(${imageData})`;
+    document.getElementById("top-profile-photo").style.backgroundImage =
+      `url(${imageData})`;
 
-document.getElementById("main-profile-photo").style.backgroundImage =
-  `url(${imageData})`;
+    document.getElementById("main-profile-photo").style.backgroundImage =
+      `url(${imageData})`;
   };
 
   reader.readAsDataURL(file);
 }
-
-window.onload = function() {
-const userEmail = auth.currentUser?.email;
-
-const savedPhoto = userEmail
-  ? localStorage.getItem(userEmail + "_profilePhoto")
-  : null;
-
-if (savedPhoto) {
-
-  document.getElementById("top-profile-photo").style.backgroundImage =
-    `url(${savedPhoto})`;
-
-  document.getElementById("main-profile-photo").style.backgroundImage =
-    `url(${savedPhoto})`;
-}
-};
 function openPhotoOptions() {
 
   const menu =
     document.getElementById("photo-options");
 
-  if (menu.style.display === "block") {
-    menu.style.display = "none";
-  } else {
-    menu.style.display = "block";
-  }
+  menu.style.display =
+    menu.style.display === "block"
+      ? "none"
+      : "block";
 }
 
 function viewProfilePhoto() {
 
-  const img =
-    document.getElementById("main-profile-photo").src;
+  const photoDiv =
+    document.getElementById("main-profile-photo");
 
-  const viewer = document.createElement("div");
+  const bg =
+    photoDiv.style.backgroundImage;
+
+  if (!bg) {
+    alert("No profile photo uploaded");
+    return;
+  }
+
+  const imageUrl =
+    bg.slice(5, -2);
+
+  const viewer =
+    document.createElement("div");
 
   viewer.innerHTML = `
     <div
@@ -290,9 +309,8 @@ function viewProfilePhoto() {
       "
       onclick="this.remove()"
     >
-
-      <img
-        src="${img}"
+          <img
+        src="${imageUrl}"
         style="
           width:350px;
           height:350px;
@@ -300,7 +318,6 @@ function viewProfilePhoto() {
           object-fit:cover;
         "
       />
-
     </div>
   `;
 
@@ -313,46 +330,11 @@ function changeProfilePhoto() {
     "profile-photo-input"
   ).click();
 }
-document.addEventListener("click", function(event) {
 
-  const menu =
-    document.getElementById("photo-options");
-
-  const profilePhoto =
-    document.getElementById("main-profile-photo");
-
-  if (
-    !menu.contains(event.target) &&
-    event.target !== profilePhoto
-  ) {
-    menu.style.display = "none";
-  }
-});
-function loadProfilePhoto() {
-
-  const userEmail = auth.currentUser?.email;
-
-  const savedPhoto = userEmail
-    ? localStorage.getItem(userEmail + "_profilePhoto")
-    : null;
-
-  if (savedPhoto) {
-
-    document.getElementById("top-profile-photo").style.backgroundImage =
-      `url(${savedPhoto})`;
-
-    document.getElementById("main-profile-photo").style.backgroundImage =
-      `url(${savedPhoto})`;
-
-  } else {
-
-    document.getElementById("top-profile-photo").style.backgroundImage = "";
-
-    document.getElementById("main-profile-photo").style.backgroundImage = "";
-  }
-}
 function openEditProfile() {
-  document.getElementById("edit-profile-box").style.display = "block";
+
+  document.getElementById("edit-profile-box").style.display =
+    "block";
 
   document.getElementById("edit-username").value =
     document.getElementById("profile-username").innerText;
@@ -363,9 +345,7 @@ function openEditProfile() {
   document.getElementById("edit-bio").value =
     document.getElementById("profile-bio").innerText;
 }
-
-function saveProfileDetails() {
-  const email = auth.currentUser.email;
+async function saveProfileDetails() {
 
   const username =
     document.getElementById("edit-username").value;
@@ -376,12 +356,20 @@ function saveProfileDetails() {
   const bio =
     document.getElementById("edit-bio").value;
 
-  localStorage.setItem(email + "_username", username);
-  localStorage.setItem(email + "_phone", phone);
-  localStorage.setItem(email + "_bio", bio);
+  await db.collection("users")
+    .doc(auth.currentUser.uid)
+    .update({
+      username: username,
+      phone: phone,
+      bio: bio
+    });
 
-  document.getElementById("profile-username").innerText = username;
-  document.getElementById("profile-bio").innerText = bio;
+  document.getElementById("profile-username").innerText =
+    username;
 
-  document.getElementById("edit-profile-box").style.display = "none";
+  document.getElementById("profile-bio").innerText =
+    bio;
+
+  document.getElementById("edit-profile-box").style.display =
+    "none";
 }
