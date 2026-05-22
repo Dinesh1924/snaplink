@@ -54,6 +54,10 @@ async function signup() {
       email.value;
 
     document.getElementById('login-pass').focus();
+    localStorage.setItem(
+  "snaplinkUsername",
+  username.value
+);
 
   } catch (error) {
 
@@ -93,7 +97,14 @@ async function login() {
     document.getElementById('app').style.display =
       'block';
       showHome();
+     let savedUsername = localStorage.getItem("snaplinkUsername");
 
+if (!savedUsername) {
+  savedUsername = document.getElementById("login-email").value.split("@")[0];
+}
+
+document.getElementById("profile-username").innerText =
+  savedUsername;
   } catch (error) {
 
     document.getElementById('auth-error').innerText =
@@ -183,3 +194,30 @@ function showSearch() {
 function showMessages() {
   alert("Messages page coming soon");
 }
+function uploadProfilePhoto() {
+  const file = document.getElementById("profile-photo-input").files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const imageData = e.target.result;
+
+    localStorage.setItem("profilePhoto", imageData);
+
+    document.getElementById("top-profile-photo").src = imageData;
+    document.getElementById("main-profile-photo").src = imageData;
+  };
+
+  reader.readAsDataURL(file);
+}
+
+window.onload = function() {
+  const savedPhoto = localStorage.getItem("profilePhoto");
+
+  if (savedPhoto) {
+    document.getElementById("top-profile-photo").src = savedPhoto;
+    document.getElementById("main-profile-photo").src = savedPhoto;
+  }
+};

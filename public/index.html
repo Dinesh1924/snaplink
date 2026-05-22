@@ -111,10 +111,7 @@
       class="search-box"
     />
 
-   <img
-  src="https://i.pravatar.cc/40"
-  class="top-profile-pic"
-/>
+ <img id="top-profile-photo" src="https://i.pravatar.cc/150" class="top-profile-pic" onclick="showProfile()"/>
   </div>
 
   <div class="main-layout">
@@ -183,10 +180,20 @@
 
   <div class="profile-header">
 
-    <img
+   <img
+      id="main-profile-photo"
       src="https://i.pravatar.cc/150"
       class="profile-pic"
-    />
+      onclick="document.getElementById('profile-photo-input').click()"
+/>
+
+<input
+      type="file"
+      id="profile-photo-input"
+      accept="image/*"
+      onchange="uploadProfilePhoto()"
+      style="display:none;"
+/>
 
     <div class="profile-stats">
 
@@ -209,7 +216,7 @@
 
   </div>
 
-  <h2 id="profile-username">id=username</h2>
+<h2 id="profile-username">@username</h2>
 
   <p>SnapLink Developer 🚀</p>
 
