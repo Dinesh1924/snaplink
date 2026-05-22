@@ -6,6 +6,10 @@
   <title>SnapLink</title>
 
   <link rel="stylesheet" href="style.css"/>
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+/>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -107,22 +111,35 @@
       class="search-box"
     />
 
-    <div class="profile-icon">👤</div>
+   <img
+  src="https://i.pravatar.cc/40"
+  class="top-profile-pic"
+/>
   </div>
 
   <div class="main-layout">
 
    <div class="bottom-nav">
 
-  <button onclick="showHome()">🏠</button>
+  <button onclick="showHome()">
+  <i class="fa-solid fa-house"></i>
+</button>
 
-  <button onclick="showSearch()">🔍</button>
+<button onclick="showSearch()">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
 
-  <button onclick="showCreate()">➕</button>
+<button onclick="showCreate()">
+  <i class="fa-solid fa-square-plus"></i>
+</button>
 
-  <button onclick="showMessages()">💬</button>
+<button onclick="showMessages()">
+  <i class="fa-solid fa-paper-plane"></i>
+</button>
 
-  <button onclick="showProfile()">👤</button>
+<button onclick="showProfile()">
+  <i class="fa-solid fa-user"></i>
+</button>
 
 </div>
 
@@ -192,7 +209,7 @@
 
   </div>
 
-  <h2>@dinesh</h2>
+  <h2 id="profile-username">id=username</h2>
 
   <p>SnapLink Developer 🚀</p>
 
