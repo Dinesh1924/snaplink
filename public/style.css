@@ -274,3 +274,10 @@ h1{
   height:120px;
   border-radius:10px;
 }
+body{
+  padding-bottom:80px;
+}
+
+.bottom-nav{
+  z-index:999;
+}
