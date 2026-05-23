@@ -163,6 +163,8 @@ function hideAllPages() {
 
   document.querySelector(".create-post").style.display =
     "none";
+  document.getElementById("search-page").style.display =
+    "none";
 }
 
 async function showHome() {
@@ -235,11 +237,19 @@ async function showProfile() {
 }
 
 function showSearch() {
-  alert("Search page coming soon");
+
+  hideAllPages();
+
+  document.getElementById("search-page").style.display =
+    "block";
 }
 
-function showMessages() {
-  alert("Messages page coming soon");
+function showSearch() {
+
+  hideAllPages();
+
+  document.getElementById("search-page").style.display =
+    "block";
 }
 
 async function uploadProfilePhoto() {
@@ -260,7 +270,7 @@ async function uploadProfilePhoto() {
     .doc(auth.currentUser.uid)
     .set({
       profilePhoto: imageData
-    });
+    }, { merge: true });
 
   document.getElementById("top-profile-photo").style.backgroundImage =
     `url(${imageData})`;
@@ -396,4 +406,110 @@ async function saveProfileDetails() {
 
     alert("Failed to update profile");
   }
+}
+document.addEventListener("click", function(event) {
+
+  const menu =
+    document.getElementById("photo-options");
+
+  const profilePhoto =
+    document.getElementById("main-profile-photo");
+
+  if (
+    menu &&
+    !menu.contains(event.target) &&
+    event.target !== profilePhoto
+  ) {
+    menu.style.display = "none";
+  }
+
+});
+async function searchUsers() {
+
+  const searchText =
+    document.getElementById("search-input")
+      .value
+      .toLowerCase();
+
+  const resultsDiv =
+    document.getElementById("search-results");
+
+  resultsDiv.innerHTML = "";
+
+  if (!searchText) return;
+
+  const snapshot =
+    await db.collection("users").get();
+
+  snapshot.forEach(doc => {
+
+    const user = doc.data();
+
+    if (
+      user.username &&
+      user.username.toLowerCase().includes(searchText)
+    ) {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "search-user-card";
+
+      div.innerHTML = `
+        <h3>${user.username}</h3>
+        <p>${user.bio || ""}</p>
+      `;
+
+      resultsDiv.appendChild(div);
+    }
+
+  });
+}
+async function searchUsers() {
+
+  const text =
+    document.getElementById("search-input")
+      .value
+      .toLowerCase();
+
+  const results =
+    document.getElementById("search-results");
+
+  results.innerHTML = "";
+
+  if (text === "") return;
+
+  const snapshot =
+    await db.collection("users").get();
+
+  snapshot.forEach(doc => {
+
+    const user = doc.data();
+
+    if (
+      user.username &&
+      user.username.toLowerCase().includes(text)
+    ) {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "search-user-card";
+
+      div.innerHTML = `
+        <div
+          class="search-photo"
+          style="background-image:url('${user.profilePhoto || ""}')">
+        </div>
+
+        <div>
+          <h3>${user.username}</h3>
+          <p>${user.bio || ""}</p>
+        </div>
+      `;
+
+      results.appendChild(div);
+    }
+
+  });
 }

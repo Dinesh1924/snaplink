@@ -472,3 +472,119 @@ body{
     grid-template-columns:repeat(3, 1fr);
   }
 }
+.search-page{
+  padding:20px;
+}
+
+#search-input{
+  width:100%;
+  padding:15px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#1f1f1f;
+  color:white;
+  font-size:16px;
+  margin-bottom:20px;
+}
+
+.search-user-card{
+  background:#1f1f1f;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+  cursor:pointer;
+}
+
+.search-user-card h3{
+  color:white;
+  margin-bottom:5px;
+}
+
+.search-user-card p{
+  color:#aaa;
+}
+.search-page{
+  padding:20px;
+  margin-top:10px;
+}
+
+#search-input{
+  width:100%;
+  padding:15px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#1f1f1f;
+  color:white;
+  font-size:16px;
+}
+
+#search-results{
+  margin-top:15px;
+}
+
+.search-user-card{
+  background:#1f1f1f;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+
+.search-user-card h3{
+  color:white;
+  margin-bottom:5px;
+}
+
+.search-user-card p{
+  color:#aaa;
+}
+.search-page{
+  display:none;
+  padding:20px;
+  padding-bottom:90px;
+}
+
+#search-input{
+  width:100%;
+  padding:15px;
+  border:none;
+  outline:none;
+  border-radius:12px;
+  background:#1f1f1f;
+  color:white;
+  font-size:16px;
+}
+
+#search-results{
+  margin-top:15px;
+}
+
+.search-user-card{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  background:#1f1f1f;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+
+.search-photo{
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  background:#333;
+  background-size:cover;
+  background-position:center;
+}
+
+.search-user-card h3{
+  color:white;
+  margin:0;
+}
+
+.search-user-card p{
+  color:#aaa;
+  margin:3px 0 0;
+}
