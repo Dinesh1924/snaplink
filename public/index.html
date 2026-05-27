@@ -150,38 +150,29 @@
 
     <div class="feed">
 
-      <div class="create-post">
+      <div class="create-post" style="display:none;">
 
-        <input
-          type="text"
-          id="post-caption"
-          placeholder="Write a caption..."
-        />
+  <input
+    type="file"
+    id="post-file"
+    accept="image/*,video/*"
+    onchange="previewPostFile()"
+  />
 
-        <input
-          type="text"
-          id="post-img-url"
-          placeholder="Image URL optional"
-        />
+  <div id="post-preview"></div>
 
-        <button onclick="createPost()">Post</button>
+  <input
+    type="text"
+    id="post-caption"
+    placeholder="Add caption..."
+  />
 
-      </div>
+  <button onclick="createPost()">Post</button>
+
+</div>
 
       <div id="feed-posts">
 
-        <div class="post-card">
-          <h3>@dinesh</h3>
-
-          <p>Welcome to SnapLink 🚀</p>
-
-          <div class="post-actions">
-            <button>❤️ Like</button>
-            <button>💬 Comment</button>
-            <button>📤 Share</button>
-          </div>
-
-        </div>
 
       </div>
       <div id="profile-page" style="display:none;">
@@ -237,9 +228,30 @@
 <h2 id="profile-username">@username</h2>
 <p id="profile-bio">Bio</p>
 
-<button class="edit-profile-btn" onclick="openEditProfile()">
-  Edit Profile
-</button>
+<div class="profile-buttons">
+
+  <button
+    id="edit-profile-btn"
+    class="edit-profile-btn"
+    onclick="openEditProfile()">
+    Edit Profile
+  </button>
+
+  <button
+    id="follow-btn"
+    class="edit-profile-btn"
+    style="display:none;">
+    Follow
+  </button>
+
+  <button
+    id="message-btn"
+    class="edit-profile-btn"
+    style="display:none;">
+    Message
+  </button>
+
+</div>
 </div>   <!-- profile-page closing div -->
 
 <div id="edit-profile-box" class="edit-profile-box" style="display:none;">
@@ -265,7 +277,7 @@
 
   </div>
 
-  <div class="profile-grid">
+ <div class="profile-grid" id="profile-grid">
 
     <div class="grid-post"></div>
     <div class="grid-post"></div>

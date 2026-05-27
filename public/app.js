@@ -173,50 +173,6 @@ async function showHome() {
 
   document.getElementById("feed-posts").style.display =
     "block";
-
-  const feed =
-    document.getElementById("feed-posts");
-
-  try {
-
-    const posts =
-      await fetch("/api/posts")
-        .then(res => res.json());
-
-    feed.innerHTML = "";
-        posts.forEach(post => {
-
-      const div =
-        document.createElement("div");
-
-      div.className = "post-card";
-
-      div.innerHTML = `
-        <h3>@${post.username || "user"}</h3>
-
-        <p>${post.caption || ""}</p>
-
-        ${
-          post.imageUrl
-            ? `<img src="${post.imageUrl}" style="width:100%; border-radius:10px; margin-top:10px;">`
-            : ""
-        }
-
-        <div class="post-actions">
-          <button>❤️</button>
-          <button>💬</button>
-          <button>📤</button>
-        </div>
-      `;
-
-      feed.appendChild(div);
-    });
-
-  } catch (error) {
-
-    feed.innerHTML =
-      "<p>No posts available</p>";
-  }
 }
 
 function showCreate() {
@@ -234,14 +190,8 @@ async function showProfile() {
     "block";
 
   await loadUserProfile();
-}
 
-function showSearch() {
-
-  hideAllPages();
-
-  document.getElementById("search-page").style.display =
-    "block";
+  await loadUserPosts();
 }
 
 function showSearch() {
@@ -424,47 +374,7 @@ document.addEventListener("click", function(event) {
   }
 
 });
-async function searchUsers() {
 
-  const searchText =
-    document.getElementById("search-input")
-      .value
-      .toLowerCase();
-
-  const resultsDiv =
-    document.getElementById("search-results");
-
-  resultsDiv.innerHTML = "";
-
-  if (!searchText) return;
-
-  const snapshot =
-    await db.collection("users").get();
-
-  snapshot.forEach(doc => {
-
-    const user = doc.data();
-
-    if (
-      user.username &&
-      user.username.toLowerCase().includes(searchText)
-    ) {
-
-      const div =
-        document.createElement("div");
-
-      div.className = "search-user-card";
-
-      div.innerHTML = `
-        <h3>${user.username}</h3>
-        <p>${user.bio || ""}</p>
-      `;
-
-      resultsDiv.appendChild(div);
-    }
-
-  });
-}
 async function searchUsers() {
 
   const text =
@@ -507,9 +417,191 @@ async function searchUsers() {
           <p>${user.bio || ""}</p>
         </div>
       `;
+        div.onclick = () => {
+        openOtherProfile(user);
+      };
 
       results.appendChild(div);
     }
 
   });
+}
+let selectedPostFile = "";
+
+function previewPostFile() {
+
+  const file =
+    document.getElementById("post-file").files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+
+    selectedPostFile = e.target.result;
+
+    const preview =
+      document.getElementById("post-preview");
+
+    if (file.type.startsWith("image")) {
+
+      preview.innerHTML =
+        `<img src="${selectedPostFile}"
+          class="post-preview-media">`;
+
+    }
+
+    else {
+
+      preview.innerHTML =
+        `<video src="${selectedPostFile}"
+          class="post-preview-media"
+          controls></video>`;
+    }
+
+  };
+
+  reader.readAsDataURL(file);
+}
+
+async function createPost() {
+
+  const caption =
+    document.getElementById("post-caption").value;
+
+  if (!selectedPostFile) {
+
+    alert("Please select image or video");
+
+    return;
+  }
+
+  await db.collection("posts").add({
+
+    userId: auth.currentUser.uid,
+
+    caption: caption,
+
+    media: selectedPostFile,
+
+    createdAt: new Date()
+
+  });
+
+  document.getElementById("post-caption").value =
+    "";
+
+  document.getElementById("post-file").value =
+    "";
+
+  document.getElementById("post-preview").innerHTML =
+    "";
+
+  selectedPostFile = "";
+
+  alert("Post uploaded");
+
+  showProfile();
+
+  loadUserPosts();
+}
+
+async function loadUserPosts() {
+
+  const grid =
+    document.getElementById("profile-grid");
+
+  grid.innerHTML = "";
+
+  const snapshot =
+    await db.collection("posts")
+      .where(
+        "userId",
+        "==",
+        auth.currentUser.uid
+      )
+      .get();
+
+  snapshot.forEach(doc => {
+
+    const post = doc.data();
+
+    const div =
+      document.createElement("div");
+
+    div.className = "grid-post";
+
+if (post.media.startsWith("data:image")) {
+
+  div.innerHTML =
+    `<img src="${post.media}" onclick="openPostView('${doc.id}')">`;
+}
+
+else {
+
+  div.innerHTML =
+    `<video src="${post.media}" onclick="openPostView('${doc.id}')"></video>`;
+}
+
+    grid.appendChild(div);
+
+  });
+
+}
+async function openPostView(postId) {
+
+  const postDoc =
+    await db.collection("posts").doc(postId).get();
+
+  const post = postDoc.data();
+
+  const viewer = document.createElement("div");
+
+  viewer.innerHTML = `
+    <div class="post-viewer" onclick="this.remove()">
+
+      ${
+        post.media.startsWith("data:image")
+          ? `<img src="${post.media}" class="post-view-media">`
+          : `<video src="${post.media}" class="post-view-media" controls></video>`
+      }
+
+      <p class="post-view-caption">
+        ${post.caption || ""}
+      </p>
+
+    </div>
+  `;
+
+  document.body.appendChild(viewer);
+}
+function openOtherProfile(userData) {
+
+  hideAllPages();
+
+  document.getElementById("profile-page").style.display =
+    "block";
+
+  document.getElementById("profile-username").innerText =
+    userData.username;
+
+  document.getElementById("profile-bio").innerText =
+    userData.bio || "";
+
+  if (userData.profilePhoto) {
+
+    document.getElementById("main-profile-photo")
+      .style.backgroundImage =
+      `url(${userData.profilePhoto})`;
+  }
+
+  document.getElementById("edit-profile-btn")
+    .style.display = "none";
+
+  document.getElementById("follow-btn")
+    .style.display = "block";
+
+  document.getElementById("message-btn")
+    .style.display = "block";
 }
